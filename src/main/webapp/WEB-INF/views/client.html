@@ -1,0 +1,61 @@
+<html>
+<head>
+    <title>client</title>
+</head>
+<body>
+<script >
+
+    var webSocket = new WebSocket("ws://localhost:8080/socketServer");//WebSocket对应的地址
+
+    webSocket.onopen = onOpen;
+    webSocket.onmessage = onMessage;
+    webSocket.onerror = onError;
+    webSocket.onclose = onClose;
+
+    function getStatus() {
+        switch (webSocket.readyState) {
+
+            case webSocket.CONNECTING:
+                alert("连接中");
+                break;
+            case webSocket.OPEN:
+                alert("已连接");
+                break;
+            case webSocket.CLOSING:
+                alert("断开中");
+                break;
+            case webSocket.CLOSED:
+                alert("已断开");
+                break;
+
+        }
+    }
+
+    //处理服务器发送的消息
+    function onMessage(evt) {
+        alert(evt.data);
+    }
+
+    //向服务器发送数据
+    function doSend() {
+        var msg = document.getElementById("message").value;
+        webSocket.send(msg);
+    }
+
+    function onOpen(openEvt) {
+    }
+    function onError() {
+    }
+    function onClose() {
+    }
+
+    //关闭网页则断开websocket连接
+    window.close = function () {
+        webSocket.onclose();
+    }
+</script>
+<label><input type="text" id="message"/></label>
+<button onclick="doSend()">发送</button>
+<button onclick="getStatus()">状态</button>
+</body>
+</html>
