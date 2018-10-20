@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sss.mapper.UserMapper">
+    <insert id="add" parameterType="User" >
+            insert into user_ ( name ) values (#{name})
+        </insert>
+
+    <delete id="delete" parameterType="User" >
+            delete from user_ where id= #{id}
+        </delete>
+
+    <select id="get" parameterType="_int" resultType="User">
+            select * from   user_  where id= #{id}
+        </select>
+
+    <update id="update" parameterType="User" >
+            update user_ set name=#{name} where id=#{id}
+        </update>
+    <select id="list" resultType="User">
+            select * from   user_
+        </select>
+</mapper>
