@@ -29,8 +29,9 @@ public class IndexController {
         ArrayList<String> userName = new ArrayList<>();
         int count = MyWebSocketHandler.sessionMap.size();
         userName.addAll(MyWebSocketHandler.sessionMap.keySet());
+
         mav.addObject("name",userName.toString());
-        mav.addObject("count",count);
+        mav.addObject("count",count-1);
         return mav;
 
     }

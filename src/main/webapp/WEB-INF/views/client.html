@@ -6,11 +6,13 @@
 </head>
 <body>
 <div id="connect">
-    <button onclick="connect()">connect</button>
+    <label>客户端</label>
 </div>
 
 <script >
-    var uid = Math.floor(Math.random()*(81)+20);
+
+    //可以将设备id以及状态设为固定位数的数字便于在管理页面根据位数处理
+    var uid = randomString(4);
     var webSocket = new ReconnectingWebSocket("ws://localhost:8080/socketServer?uid="+uid);
 
     webSocket.onopen = onOpen;
@@ -18,16 +20,27 @@
     webSocket.onerror = onError;
     webSocket.onclose = onClose;
 
+    //生成随机四位ID
+    function randomString(len) {
+        len = len || 32;
+        var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
+        var maxPos = $chars.length;
+        var pwd = '';
+        for (i = 0; i < len; i++) {
+            pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+        }
+        return pwd;
+    }
+
     //发送客户端数据至服务端
     function sendData() {
-        var cpu = Math.floor(Math.random()*(81)+20);
+        var cpu = Math.floor(Math.random()*(80)+20);
         var message = "client:"+uid+",data:"+cpu;
 
         webSocket.send(message);
-        //console.log(message);
     }
 
-    function onOpen(openEvt) {
+    function onOpen() {
         setInterval("sendData()",5000);
     }
 

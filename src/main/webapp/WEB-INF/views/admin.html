@@ -5,13 +5,22 @@
     <script src="/js/vue.min.js"></script>
 </head>
 <body>
-<div id="connect">
+<div id="app">
     <button @click="connect">connect</button>
+    <span>${name}</span>
+    <span>${count}</span>
+    <ul>
+        <li v-for="(key,value) in datas">{{value}} {{key}}</li>
+    </ul>
 </div>
 
 <script >
     var app = new Vue({
-        el:'#connect',
+        el:'#app',
+        data:{
+          datas:{
+          }
+        },
         methods:{
             connect:function () {
                 var uid = "admin";
@@ -21,6 +30,9 @@
                 webSocket.onmessage = onMessage;
                 webSocket.onerror = onError;
                 webSocket.onclose = onClose;
+
+                //数据双向绑定
+                var temp = this.datas;
 
                 function getStatus() {
                     switch (webSocket.readyState) {
@@ -41,14 +53,38 @@
                     }
                 }
 
+                //初始化数据，主要将客户端名称数据处理
+                function initData(){
+                    var data = '${name}';
+                    data = data.substr(1,data.length-2).split(",");
+
+                    //初始化设置
+                    for(var index in data){
+                        var id = data[index];
+                        if(id !== 'admin')
+                            Vue.set(app.datas,id,'60');
+                    }
+
+                }
+                //刚建立连接初始化客户端数据
+                function onOpen(openEvt) {
+                    initData();
+                }
+
+
                 //处理服务器发送的消息
                 function onMessage(evt) {
-                    console.log(evt.data);
+                    //console.log(evt.data);
+                    //获取的数据为"client:uid,data:cpu"，并且在此处理数据更新页面
+                    var message = evt.data;
+                    var id = message.substr(7,4);
+                    var data  = message.substr(17,2);
+                    //由于直接设置不能更新视图改用Vue方法设置
+                    Vue.set(app.datas,id,data);
+                    //console.log(temp[id]);
+
                 }
 
-
-                function onOpen(openEvt) {
-                }
                 function onError() {
                 }
                 function onClose() {
@@ -59,6 +95,7 @@
                     webSocket.onclose();
                 }
             }
+
         }
     })
 

@@ -28,7 +28,7 @@ public class MyWebSocketHandler implements WebSocketHandler {
 
     // 消息处理
     @Override
-    public void handleMessage(WebSocketSession session, WebSocketMessage message) throws Exception {
+    public synchronized void handleMessage(WebSocketSession session, WebSocketMessage message) throws Exception {
 
         //接收数据并将其传送到管理员
         try{
