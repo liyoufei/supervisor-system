@@ -13,7 +13,7 @@ public class WebSocketConfig extends WebMvcConfigurerAdapter implements WebSocke
         //注册WebSocket
         String websocket_url = "/socketServer";
         //将控制器与url绑定，以及添加拦截器
-        registry.addHandler(new WebSocketHandler(), websocket_url).
+        registry.addHandler(new MyWebSocketHandler(), websocket_url).
                 addInterceptors(new WebSocketHandshakeInterceptor());
 
     }

@@ -1,16 +1,35 @@
 <html>
 <head>
     <title>client</title>
+    <script src="/js/reconnecting-websocket.js"></script>
+    <script src="/js/vue.min.js"></script>
 </head>
 <body>
-<script >
+<div id="connect">
+    <button onclick="connect()">connect</button>
+</div>
 
-    var webSocket = new WebSocket("ws://localhost:8080/socketServer");//WebSocket对应的地址
+<script >
+    var uid = Math.floor(Math.random()*(81)+20);
+    var webSocket = new ReconnectingWebSocket("ws://localhost:8080/socketServer?uid="+uid);
 
     webSocket.onopen = onOpen;
     webSocket.onmessage = onMessage;
     webSocket.onerror = onError;
     webSocket.onclose = onClose;
+
+    //发送客户端数据至服务端
+    function sendData() {
+        var cpu = Math.floor(Math.random()*(81)+20);
+        var message = "client:"+uid+",data:"+cpu;
+
+        webSocket.send(message);
+        //console.log(message);
+    }
+
+    function onOpen(openEvt) {
+        setInterval("sendData()",5000);
+    }
 
     function getStatus() {
         switch (webSocket.readyState) {
@@ -36,14 +55,7 @@
         alert(evt.data);
     }
 
-    //向服务器发送数据
-    function doSend() {
-        var msg = document.getElementById("message").value;
-        webSocket.send(msg);
-    }
 
-    function onOpen(openEvt) {
-    }
     function onError() {
     }
     function onClose() {
@@ -53,9 +65,8 @@
     window.close = function () {
         webSocket.onclose();
     }
+
 </script>
-<label><input type="text" id="message"/></label>
-<button onclick="doSend()">发送</button>
-<button onclick="getStatus()">状态</button>
+
 </body>
 </html>

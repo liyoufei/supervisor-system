@@ -1,0 +1,68 @@
+<html>
+<head>
+    <title>admin</title>
+    <script src="/js/reconnecting-websocket.js"></script>
+    <script src="/js/vue.min.js"></script>
+</head>
+<body>
+<div id="connect">
+    <button @click="connect">connect</button>
+</div>
+
+<script >
+    var app = new Vue({
+        el:'#connect',
+        methods:{
+            connect:function () {
+                var uid = "admin";
+                var webSocket = new ReconnectingWebSocket("ws://localhost:8080/socketServer?uid="+uid);
+
+                webSocket.onopen = onOpen;
+                webSocket.onmessage = onMessage;
+                webSocket.onerror = onError;
+                webSocket.onclose = onClose;
+
+                function getStatus() {
+                    switch (webSocket.readyState) {
+
+                        case webSocket.CONNECTING:
+                            alert("连接中");
+                            break;
+                        case webSocket.OPEN:
+                            alert("已连接");
+                            break;
+                        case webSocket.CLOSING:
+                            alert("断开中");
+                            break;
+                        case webSocket.CLOSED:
+                            alert("已断开");
+                            break;
+
+                    }
+                }
+
+                //处理服务器发送的消息
+                function onMessage(evt) {
+                    console.log(evt.data);
+                }
+
+
+                function onOpen(openEvt) {
+                }
+                function onError() {
+                }
+                function onClose() {
+                }
+
+                //关闭网页则断开websocket连接
+                window.close = function () {
+                    webSocket.onclose();
+                }
+            }
+        }
+    })
+
+</script>
+
+</body>
+</html>
