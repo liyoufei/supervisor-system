@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>chart</title>
+    <script src="/js/vue.min.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="/js/echarts.min.js"></script>
+    <script type="text/javascript" src="/js/vue-echarts.js"></script>
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+        .el-header {
+            background-color: #B3C0D1;
+            color: #333;
+            line-height: 60px;
+        }
+
+        .el-aside {
+            background-color: #EBEEF5;
+            color: #333;
+        }
+
+        .el-submenu {
+            background-color: #DCDFE6;
+        }
+
+        .el-menu-item {
+            background-color: #E4E7ED;
+        }
+
+        #main {
+            height: 400px;
+            vertical-align: middle;
+        }
+
+    </style>
+
+</head>
+<body>
+<div id="app" >
+    <el-container style="height: 700px; border: 1px solid #eee">
+        <el-aside width="200px" >
+            <el-menu :default-openeds="['1','2']">
+                <el-submenu index='1'>
+                    <template slot="title"><i class="el-icon-menu" style="font-size: 25px"></i> </template>
+                    <el-menu-item>系统信息</el-menu-item>
+                </el-submenu>
+
+                <el-submenu index='2'>
+                    <template slot="title"><i class="el-icon-message" style="font-size: 25px"></i></template>
+                    <el-menu-item>数据分析</el-menu-item>
+                </el-submenu>
+            </el-menu>
+        </el-aside>
+
+        <el-container>
+            <el-header style="text-align: right; font-size: 25px">
+                <el-dropdown>
+                    <i class="el-icon-setting" style="margin-right: 15px;font-size: 25px"></i>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item>修改密码</el-dropdown-item>
+                        <el-dropdown-item>登出</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <span>SSS</span>
+            </el-header>
+
+            <el-main>
+                <!-- 展示图表部分 -->
+                <div><el-col :span="6">
+                    <el-input  placeholder="请输入" id="id" clearable></el-input>
+                </el-col>
+                    <el-button @click="search" type="primary" icon="el-icon-search" round></el-button></div>
+
+                <template>
+
+                    <div id="main"></div>
+
+                </template>
+
+            </el-main>
+        </el-container>
+    </el-container>
+</div>
+
+
+
+</body>
+
+
+<script>
+    var app = new Vue({
+        el:'#app',
+        data() {
+            return {
+                // 初始化空对象
+                chart: null,
+                // 初始化图表配置
+                time: ['5', '6', '7', '8', '9'],
+                datas: ['1','2','3','4','5']
+            }
+        },
+        methods: {
+            search() {
+
+                //ajax 请求数据
+                var time  = this.time;
+                var data = this.datas;
+                var newChart = echarts.init(document.getElementById("main"));
+                time=[];
+                data=[];
+                $.ajax({
+                    // 方式
+                    type: "GET",
+                    // 是否异步
+                    async: true,
+                    // 路径||API
+                    url:"/search",
+                    //传递参数
+                    data:'id='+$("#id").val(),
+                    //返回数据形式为json
+                    // 加载成功
+                    success: function(datas) {
+                        // 更新初始数据
+
+                        $.each(datas, function(key,value) {
+                            time.push(key);
+                            data.push(value);
+                            newChart.setOption({
+                                title: {
+                                    text: '设备数据'
+                                },
+                                tooltip: {
+                                    trigger: 'item',
+                                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                                },
+                                legend: {
+                                    data: ["温度"]
+                                },
+
+                                xAxis: {
+                                    data: time
+
+                                },
+                                yAxis: {},
+                                series: [{
+                                    name: '温度',
+                                    type: 'line',
+                                    data: data
+
+                                }]
+                            })
+
+                        });
+
+
+                    }
+
+                })
+            }
+        }
+
+
+
+    })
+</script>
+
+
+</html>
