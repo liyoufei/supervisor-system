@@ -1,10 +1,12 @@
 package com.sss.service;
 
+import com.sss.util.DataUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.*;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,6 +17,8 @@ public class MyWebSocketHandler implements WebSocketHandler {
     private final static Logger logger = LoggerFactory.getLogger(WebSocketHandler.class);
     //WebSocketSession与name之间的映射
     public static ConcurrentHashMap<String,WebSocketSession> sessionMap = new ConcurrentHashMap<>();
+    //数据存取工具类
+    private static DataUtil dataUtil = new DataUtil();
 
     // websocket连接建立
     @Override
@@ -30,9 +34,12 @@ public class MyWebSocketHandler implements WebSocketHandler {
     @Override
     public synchronized void handleMessage(WebSocketSession session, WebSocketMessage message) throws Exception {
 
-        //接收数据并将其传送到管理员
+        String id = message.getPayload().toString().substring(7,11);
+        String data = message.getPayload().toString().substring(17,19);
+        //接收数据并将其传送到管理员,将数据存入redis
         try{
             sendDataToAdmin(message);
+            dataUtil.saveData(id,data,new Date());
         }catch (Exception e){
             e.printStackTrace();
         }

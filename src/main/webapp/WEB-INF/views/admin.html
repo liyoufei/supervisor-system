@@ -1,25 +1,90 @@
+<!DOCTYPE html>
 <html>
 <head>
-    <title>admin</title>
+    <title>hello</title>
     <script src="/js/reconnecting-websocket.js"></script>
-    <script src="/js/vue.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+        .el-header {
+            background-color: #B3C0D1;
+            color: #333;
+            line-height: 60px;
+        }
+
+        .el-aside {
+            background-color: #EBEEF5;
+            color: #333;
+        }
+
+        .el-submenu {
+            background-color: #DCDFE6;
+        }
+
+        .el-menu-item {
+            background-color: #E4E7ED;
+        }
+
+    </style>
+
 </head>
 <body>
-<div id="app">
-    <button @click="connect">connect</button>
-    <span>${name}</span>
-    <span>${count}</span>
-    <ul>
-        <li v-for="(key,value) in datas">{{value}} {{key}}</li>
-    </ul>
+<div id="app" >
+    <el-container style="height: 700px; border: 1px solid #eee">
+        <el-aside width="200px" >
+            <el-menu :default-openeds="['1','2']">
+                <el-submenu index='1'>
+                    <template slot="title"><i class="el-icon-menu" style="font-size: 25px"></i> </template>
+                    <el-menu-item>系统信息</el-menu-item>
+                </el-submenu>
+
+                <el-submenu index='2'>
+                    <template slot="title"><i class="el-icon-message" style="font-size: 25px"></i></template>
+                    <el-menu-item>数据分析</el-menu-item>
+                </el-submenu>
+            </el-menu>
+        </el-aside>
+
+        <el-container>
+            <el-header style="text-align: right; font-size: 25px">
+                <el-dropdown>
+                    <i class="el-icon-setting" style="margin-right: 15px;font-size: 25px"></i>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item>修改密码</el-dropdown-item>
+                        <el-dropdown-item>登出</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <span>SSS</span>
+            </el-header>
+
+            <el-main>
+                <el-button @click="connect" type="primary" plain>连接</el-button>
+                <!-- <span>${count}</span> -->
+                <span style="font-size: 20px">设备在线数：<a style="color: #67C23A">${count}</a></span>
+                <ul>
+                    <li v-for="(key,value) in datas">
+                        <el-card shadow="hover">
+                            <span style="font-size: 25px">设备ID：<a style="color: #67C23A">{{value}}</a> 数据：<a style="color: #67C23A">{{key}}</a></span>
+                        </el-card>
+                    </li>
+                </ul>
+            </el-main>
+        </el-container>
+    </el-container>
+
 </div>
 
-<script >
+</body>
+<script src="/js/vue.min.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
     var app = new Vue({
         el:'#app',
         data:{
-          datas:{
-          }
+            datas:{
+            }
         },
         methods:{
             connect:function () {
@@ -59,11 +124,11 @@
                     data = data.substr(1,data.length-2).split(",");
 
                     //初始化设置
-                    for(var index in data){
-                        var id = data[index];
-                        if(id !== 'admin')
-                            Vue.set(app.datas,id,'60');
-                    }
+                    // for(var index in data){
+                    //     var id = data[index];
+                    //     if(id != 'admin')
+                    //         Vue.set(app.datas,id,'60');
+                    // }
 
                 }
                 //刚建立连接初始化客户端数据
@@ -98,8 +163,7 @@
 
         }
     })
-
 </script>
 
-</body>
+
 </html>
