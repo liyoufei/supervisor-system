@@ -6,9 +6,7 @@ import org.springframework.web.socket.WebSocketHandler;
 import redis.clients.jedis.Jedis;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DataUtil {
@@ -16,6 +14,12 @@ public class DataUtil {
     private final static Logger logger = LoggerFactory.getLogger(DataUtil.class);
     private static Jedis jedis = new Jedis("localhost");
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm:ss");
+    class MyComparator implements Comparator<String> {
+        @Override
+        public int compare(String o1, String o2) {
+            return o1.compareTo(o2);//升序排列
+        }
+    }
 
 
     /**
@@ -37,7 +41,18 @@ public class DataUtil {
      * @return 目前先返回所有的数据
      */
     public  Map<String, String> getData(String id){
-        return jedis.hgetAll(id);
+
+        Map<String,String> map =  jedis.hgetAll(id);
+        //构建新的键值增序排列的set，意味着时间递增
+        Set<String> set = new TreeSet<>(new MyComparator());
+        set.addAll(map.keySet());
+        //按照时间增加的顺序添加至链式hashmap
+        LinkedHashMap<String,String> hashMap = new LinkedHashMap<>();
+        for(Iterator<String> iterator = set.iterator();iterator.hasNext();){
+            hashMap.put(iterator.next(),map.get(iterator.next()));
+        }
+        return hashMap;
+
     }
 
 

@@ -71,7 +71,7 @@ public class MyWebSocketHandler implements WebSocketHandler {
     // websocket 连接关闭
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-        // TODO Auto-generated method stub
+
         logger.info(String.format("Websocket:[userId=%s]已经关闭",(String) session.getAttributes().get("uid")));
         removeSession(session);
     }

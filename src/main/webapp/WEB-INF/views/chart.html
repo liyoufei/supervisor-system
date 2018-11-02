@@ -135,7 +135,7 @@
                                 },
                                 tooltip: {
                                     trigger: 'item',
-                                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                                    formatter: "{a} <br/>{b} : {c} "
                                 },
                                 legend: {
                                     data: ["温度"]
@@ -149,6 +149,7 @@
                                 series: [{
                                     name: '温度',
                                     type: 'line',
+                                    smooth: 0.3,
                                     data: data
 
                                 }]

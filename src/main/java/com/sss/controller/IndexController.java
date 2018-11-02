@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -37,7 +35,7 @@ public class IndexController {
         userName.addAll(MyWebSocketHandler.sessionMap.keySet());
 
         mav.addObject("name",userName.toString());
-        mav.addObject("count",count-1);
+        mav.addObject("count",count);
         return mav;
 
     }
@@ -66,6 +64,11 @@ public class IndexController {
         return new ModelAndView("chart");
     }
 
+
+    @RequestMapping("/test")
+    public ModelAndView test(){
+        return new ModelAndView("client");
+    }
 
 
 
