@@ -21,7 +21,6 @@ public class DataUtil {
         }
     }
 
-
     /**
      * 将获取到的消息存入redis中
      * @param id 设备id
